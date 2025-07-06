@@ -1,0 +1,30 @@
+import React, { useState } from 'react';
+
+function App() {
+  const [walletAddress, setWalletAddress] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  const connectWallet = async () => {
+    if ((window as any).ethereum) {
+      try {
+        const accounts = await (window as any).ethereum.request({ method: 'eth_requestAccounts' });
+        setWalletAddress(accounts[0]);
+      } catch (err) {
+        setError('Could not connect to wallet');
+      }
+    } else {
+      setError('MetaMask not detected');
+    }
+  };
+
+  return (
+    <div style={{ padding: 20, background: '#111', color: '#fff', minHeight: '100vh' }}>
+      <h1>CryptoJackpot</h1>
+      <button onClick={connectWallet}>Connect Wallet</button>
+      {walletAddress && <p>Connected: {walletAddress}</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+    </div>
+  );
+}
+
+export default App;
